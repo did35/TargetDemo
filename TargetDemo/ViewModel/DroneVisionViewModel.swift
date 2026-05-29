@@ -13,7 +13,7 @@ class DroneVisionViewModel {
     var confidence: Double = 0.0
     
     func simulateDetection () {
-        withAnimation {
+        withAnimation(.easeInOut(duration: 0.5)) {
             confidence = Double.random(in: 0.3...1.0)
             
             if confidence > 0.75 {
