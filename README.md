@@ -122,23 +122,93 @@ This allows scalable vector-based HUD graphics such as:
 
 ---
 
-# Educational Purpose
+# Why `withAnimation` Is Inside the ViewModel
 
-This project is intended to demonstrate how a small SwiftUI prototype can represent a larger software concept:
+The project intentionally places:
 
 ```swift
-enum SoftwareConcept {
-    case stateDrivenUI
-    case simulatedDetection
-    case visualFeedback
-    case reusableComponents
-    case cleanArchitecture
+withAnimation(.easeInOut(duration: 0.5))
+```
+
+inside the `DroneVisionViewModel` instead of directly in the SwiftUI view.
+
+Example:
+
+```swift
+func simulateDetection() {
+    withAnimation(.easeInOut(duration: 0.5)) {
+
+        confidence = Double.random(in: 0.3...1.0)
+
+        if confidence > 0.75 {
+            lockState = .locked
+        } else if confidence > 0.45 {
+            lockState = .detected
+        } else {
+            lockState = .searching
+        }
+    }
 }
 ```
 
-For non-coders, it shows how software can visually represent a detection state.
+## Why?
 
-For developers, it demonstrates a clean SwiftUI architecture using reusable views and modern state management.
+For this lightweight educational prototype, the animation is considered part of the **state transition logic** itself.
+
+The transition between:
+
+- Searching
+- Detected
+- Locked
+
+is tightly coupled to the simulated detection pipeline.
+
+This keeps the demo:
+
+- simple
+- compact
+- easy to read
+- beginner friendly
+
+while still showcasing modern SwiftUI animation behavior.
+
+---
+
+# MVVM Perspective
+
+In stricter MVVM architectures, animations are often placed in the View layer because animation can be considered a presentation concern.
+
+Example:
+
+```swift
+Button("Simulate") {
+    withAnimation {
+        vm.simulateDetection()
+    }
+}
+```
+
+However, with the modern Swift Observation framework (`@Observable`), SwiftUI allows a more state-driven approach where animations can naturally live alongside observable state changes.
+
+---
+
+# Educational Goal
+
+This project intentionally favors:
+
+- readability
+- clarity
+- reduced boilerplate
+- easy experimentation
+
+over strict enterprise-level separation rules.
+
+The objective is to demonstrate how a small amount of SwiftUI code can simulate:
+
+- confidence transitions
+- HUD-style feedback
+- visual acquisition states
+- animated state-driven rendering
 
 ---
 
